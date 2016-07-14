@@ -5,7 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --watch --progress --colors & live-server ./public/"
+    "start": "webpack --watch --progress --colors & nodemon ./server/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "react": "^15.2.1",
-    "react-dom": "^15.2.1"
+    "react-dom": "^15.2.1",
+    "react-router": "^2.5.2"
   }
 }

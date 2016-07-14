@@ -1,6 +1,6 @@
 import React from 'react';
 
-var Login = () => (
+const Login = () => (
   <div className="container">
     <div className="row">
       <div className="col-sm-4">
