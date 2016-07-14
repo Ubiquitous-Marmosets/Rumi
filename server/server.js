@@ -1,6 +1,7 @@
 let express = require('express');
 let session = require('express-session');
 let passport = require('passport');
+let LocalStrategy = require('passport-local');
 let FacebookStrategy = require('passport-facebook').Strategy;
 
 checkForEnvironmentVariables(['FB_ID', 'FB_SECRET', 'SESSION_SECRET']);
@@ -13,6 +14,25 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   done(null, id);
 });
+
+// passport-local configurtion
+passport.use(new LocalStrategy({
+    usernameField: 'email'
+  },
+  function(email, password, done) {
+    User.findOne({where: {email}}, (err, user) => {
+      if (err) {
+        return done(err);
+      }
+
+      if (!user || !user.verifyPassword(password)) {
+        return done(null, false);
+      }
+
+      return done(null, user);
+    });
+  }
+));
 
 // passport-facebook configuration
 passport.use(new FacebookStrategy({
@@ -33,6 +53,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // routing
+
+app.post('/auth/local', 
+  passport.authenticate('local', {
+    failureRedirect: '/login'
+  }), function(req, res) {
+    res.redirect('/');
+  }
+);
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
 
