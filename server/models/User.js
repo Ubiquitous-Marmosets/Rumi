@@ -11,8 +11,12 @@ var User = db.define('user', {
   password: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  verifyPassword: {
+
   }
 });
+
 
 db.sync({
 }).then(() => {
