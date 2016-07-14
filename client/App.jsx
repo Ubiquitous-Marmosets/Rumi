@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Router, Route, Link } from 'react-router'
 import Login from './Login.jsx'
 
 class App extends React.Component {
@@ -10,10 +11,17 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Login/>
+        <ul>
+          <li><Link to="/login">Login</Link></li>
+        </ul>
       </div>
     );
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render((  
+  <Router> 
+    <Route path="/" component={App}/>
+    <Route path="login" component={Login}/>
+  </Router>), 
+document.getElementById('app'));
