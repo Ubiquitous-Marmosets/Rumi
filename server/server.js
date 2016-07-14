@@ -27,7 +27,7 @@ passport.use(new FacebookStrategy({
 // middleware configuration
 
 let app = express();
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/../public'));
 app.use(session({secret: process.env.SESSION_SECRET}));
 app.use(passport.initialize());
 app.use(passport.session());
