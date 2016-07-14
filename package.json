@@ -1,14 +1,22 @@
 {
-  "name": "Rumi",
-  "version": "",
+  "name": "rumi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch --progress --colors & live-server ./public/"
   },
+  "author": "",
   "license": "ISC",
-  "dependencies": {
-
-
-  },
   "devDependencies": {
-   
+    "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1"
+  },
+  "dependencies": {
+    "react": "^15.2.1",
+    "react-dom": "^15.2.1"
   }
 }
