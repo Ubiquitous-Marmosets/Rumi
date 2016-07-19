@@ -1,6 +1,6 @@
 var db = require('./sequelize.js');
 var Sequelize = require('sequelize');
-// var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt');
 // console.log(db);
 
 var User = db.define('user', {
@@ -26,11 +26,27 @@ var User = db.define('user', {
   }
 }, {
   instanceMethods: {
-    verifyPassword: function(enteredPassword) { return enteredPassword === this.password; } //return (this.getDataValue('password') === enteredPassword); }
+    verifyPassword: enteredPassword => {
+      bcrypt.compare(enteredPassword, this.password, (err, res) => {
+        if (err) {
+          return console.error(err);
+        } else {
+          // res will be true or false
+          return res;
+        }
+      });
+    }
   }
 });
 
+User.hook('beforeCreate', (user, options) => {
+  bcrypt.hash(user.password, null, null, (err, hashedPassword) => {
+    if (err) {
+      console.error(err);
+    } else {
+      user.password = hashedPassword;
+    }
+  });
+});
+
 module.exports = User;
-
-//User.prototype.verifyPassword = enteredPassword => this.getDataValue('password') === enteredPassword;
-

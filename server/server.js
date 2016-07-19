@@ -20,8 +20,8 @@ passport.deserializeUser((id, done) => {
 
 // passport-local configuration
 passport.use(new LocalStrategy({
-    usernameField: 'email'
-  },
+  usernameField: 'email'
+},
   function(email, password, done) {
     User.findOne({where: {email}})
         .then((user) => {
@@ -47,13 +47,12 @@ passport.use(new LocalStrategy({
 
 // passport-facebook configuration
 passport.use(new FacebookStrategy({
-    clientID: process.env.FB_ID,
-    clientSecret: process.env.FB_SECRET,
-    callbackURL: '/auth/facebook/return'
-  }, function(accessToken, refreshToken, profile, done) {
-    done(null, profile);
-  }
-));
+  clientID: process.env.FB_ID,
+  clientSecret: process.env.FB_SECRET,
+  callbackURL: '/auth/facebook/return'
+}, function(accessToken, refreshToken, profile, done) {
+  done(null, profile);
+}));
 
 // middleware configuration
 
@@ -73,7 +72,7 @@ app.post('createUserEndpoint', (req, res) => {
 
         // user already exists
         if (user) {
-          res.redirect('createUserEndpoint');
+          res.redirect('createUserEndpoint'); // Login
         } else {
           bcrypt.hash(req.body.password, null, null, (err, hashedPassword) => {
             if (err) {
@@ -92,7 +91,7 @@ app.post('createUserEndpoint', (req, res) => {
       });
 });
 
-app.post('/auth/local', 
+app.post('/auth/local',
   passport.authenticate('local', {
     failureRedirect: '/login'
   }), function(req, res) {
@@ -103,7 +102,7 @@ app.post('/auth/local',
 app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.get('/auth/facebook/return',
-  passport.authenticate('facebook', 
+  passport.authenticate('facebook',
     { successRedirect: '/',
       failureRedirect: '/login' }));
 
@@ -119,18 +118,18 @@ module.exports = app;
 
 // helper functions
 
-function isAuth(req, res, next) {
+var isAuth = (req, res, next) => {
   if (req.user) {
     next();
   } else {
     res.redirect('/login');
   }
-}
+};
 
-function checkForEnvironmentVariables(arr) {
+var checkForEnvironmentVariables = (arr) => {
   arr.forEach(v => {
     if (!process.env[v]) {
       throw new Error(`environment variable ${v} not defined`);
     }
   });
-}
+};
