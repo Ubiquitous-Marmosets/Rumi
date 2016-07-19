@@ -1,7 +1,7 @@
 var db = require('./sequelize.js');
 var Sequelize = require('sequelize');
 
-var Task = db.define('task', {
+var Task = db.define('event', {
   name: {
     type: Sequelize.STRING,
     allowNull: false
@@ -15,3 +15,6 @@ var Task = db.define('task', {
     allowNull: true
   }
 });
+
+module.exports = Task;
+

@@ -1,6 +1,6 @@
 var db = require('./sequelize.js');
 var Sequelize = require('sequelize');
-var bcrypt = require('bcrypt');
+// var bcrypt = require('bcrypt');
 // console.log(db);
 
 var User = db.define('user', {
@@ -30,23 +30,7 @@ var User = db.define('user', {
   }
 });
 
+module.exports = User;
 
 //User.prototype.verifyPassword = enteredPassword => this.getDataValue('password') === enteredPassword;
 
-
-db.sync({
-}).then(() => {
-  return User.create({
-    name: 'trevdog',
-    email: 'trevorwhealy@gmail.com',
-    password: 'mypassissecret',
-    admin: true,
-  });
-})
-.catch((error) => {
-  console.log(error);
-});
-
-var userObj = User.findOne({where: {'name': 'trevdog'}}).then(function(user){
-  console.log(user.verifyPassword('mypassissecret'));
-});
