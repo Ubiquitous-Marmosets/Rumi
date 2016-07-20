@@ -1,6 +1,6 @@
 var Sequelize = require('sequelize');
 
-var db = new Sequelize('rumi', 'root', '', {
+var db = new Sequelize('rumi', 'work', '', {
   host: 'localhost',
   dialect: 'postgres',
 });

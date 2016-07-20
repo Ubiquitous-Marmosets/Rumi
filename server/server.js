@@ -5,7 +5,7 @@ let bcrypt = require('bcrypt-nodejs');
 let passport = require('passport');
 let LocalStrategy = require('passport-local');
 let FacebookStrategy = require('passport-facebook').Strategy;
-let User = require('needToRequireModelFile');
+let User = require('./models/User');
 
 checkForEnvironmentVariables(['FB_ID', 'FB_SECRET', 'SESSION_SECRET']);
 
@@ -19,31 +19,19 @@ passport.deserializeUser((id, done) => {
 });
 
 // passport-local configuration
+// Sign Up: Create a new user if an email doesnt already exist in the database
 passport.use(new LocalStrategy({
   usernameField: 'email'
-},
-  function(email, password, done) {
-    User.findOne({where: {email}})
-        .then((user) => {
-          if (!user) {
-            return done(null, false);
-          }
-
-          // compare password to hashed password from db
-          bcrypt.compare(password, user.password, (err, correctPassword) => {
-            if (err) {
-              return done(err);
-            }
-
-            if (!correctPassword) {
-              return done(null, false);
-            }
-
-            return done(null, user);
-          });
-        });
-  }
-));
+}, function(email, password, done) {
+  User.findOrCreate({where: {email}, defaults: {password: password}})
+    .spread((user, created) => {
+      if (!created) {
+        return done(null, false);
+      } else {
+        return done(null, user);
+      }
+    });
+}));
 
 // passport-facebook configuration
 passport.use(new FacebookStrategy({
@@ -55,7 +43,6 @@ passport.use(new FacebookStrategy({
 }));
 
 // middleware configuration
-
 let app = express();
 app.use(express.static(__dirname + '/../public'));
 app.use(session({secret: process.env.SESSION_SECRET}));
@@ -63,32 +50,26 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// routing
-
 // create user, hash password, and store in db
-app.post('createUserEndpoint', (req, res) => {
-  User.findOne({where: {email: req.body.email}})
-      .then((user) => {
+// Sign In:
+app.post('/login', (req, res) => {
 
-        // user already exists
-        if (user) {
-          res.redirect('createUserEndpoint'); // Login
-        } else {
-          bcrypt.hash(req.body.password, null, null, (err, hashedPassword) => {
-            if (err) {
-              res.redirect('createUserEndpoint');
-            } else {
-              User.create({
-                email: req.body.email,
-                password: hashedPassword
-              })
-              .then(function() {
-                res.redirect('/');
-              });
-            }
-          });
+  User.findOne({where: {email: req.body.email}})
+    .then((user) => {
+      if (!user) {
+        console.error('user does not exist in the database.');
+        res.redirect('/signup');
+      } else {
+        // if there is a user with that email, now we have to verify the password
+        if (user.verifyPassword(req.body.password)) {
+          console.log('successful sign in');
+          res.redirect('/');
+        } else { // if the password failed
+          console.error('the password you entered does not match');
+          res.redirect('/login');
         }
-      });
+      }
+    });
 });
 
 app.post('/auth/local',
@@ -103,7 +84,7 @@ app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.get('/auth/facebook/return',
   passport.authenticate('facebook',
-    { successRedirect: '/',
+    { successRedirect: '/', //user find or create goes here on success
       failureRedirect: '/login' }));
 
 app.get('/logout', (req, res) => {
@@ -118,15 +99,15 @@ module.exports = app;
 
 // helper functions
 
-var isAuth = (req, res, next) => {
+function isAuth(req, res, next) {
   if (req.user) {
     next();
   } else {
     res.redirect('/login');
   }
-};
+}
 
-var checkForEnvironmentVariables = (arr) => {
+function checkForEnvironmentVariables(arr) {
   arr.forEach(v => {
     if (!process.env[v]) {
       throw new Error(`environment variable ${v} not defined`);

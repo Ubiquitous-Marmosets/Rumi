@@ -1,12 +1,16 @@
-var db = require('./sequelize.js');
+var db = require('./sequelize');
 var Sequelize = require('sequelize');
-var bcrypt = require('bcrypt');
-// console.log(db);
+var bcrypt = require('bcrypt-nodejs');
+
+var Promise = require('bluebird');
+
+var pHash = Promise.promisify(bcrypt.hash);
+var pCompare = Promise.promisify(bcrypt.compare);
 
 var User = db.define('user', {
   name: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   email: {
     type: Sequelize.STRING,
@@ -18,34 +22,23 @@ var User = db.define('user', {
   },
   admin: {
     type: Sequelize.BOOLEAN,
-    allowNull: false
+    allowNull: true
   },
   image: {
     type: Sequelize.STRING,
     allowNull: true
   }
-}, {
-  instanceMethods: {
-    verifyPassword: enteredPassword => {
-      bcrypt.compare(enteredPassword, this.password, (err, res) => {
-        if (err) {
-          return console.error(err);
-        } else {
-          // res will be true or false
-          return res;
-        }
-      });
-    }
-  }
 });
 
-User.hook('beforeCreate', (user, options) => {
-  bcrypt.hash(user.password, null, null, (err, hashedPassword) => {
-    if (err) {
-      console.error(err);
-    } else {
-      user.password = hashedPassword;
-    }
+User.verifyPassword = function(enteredPassword, user) {
+  return pCompare(enteredPassword, user.password);
+};
+
+User.beforeCreate((user, options) => {
+  return pHash(user.password, null, null).then(hash => {
+    user.password = hash;
+    //user.set('password', hash); user.password = and user.set work the same
+    //return user; // works without
   });
 });
 
