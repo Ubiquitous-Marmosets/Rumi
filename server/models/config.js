@@ -14,25 +14,22 @@ User.hasMany(Completed);
 Completed.belongsTo(User);
 Completed.belongsTo(Task); //left is source and right is target
 
-
-db.sync({})
-  .then(() => {
-    User.create({
-      email: 'trev@email.com',
-      password: 'testpass8'
-    }).then(user => {
-
-      User.verifyPassword('testpass8', user).then(res => {
-        console.log(res);
-      });
-      //user.verifyPassword('testpass8', user);
-    });
-  });
-
-   // all commands follow db.sync
-
 /*
   Create a user:
+
+  db.sync({})
+    .then(() => {
+      User.create({
+        email: 'trev@email.com',
+        password: 'testpass8'
+      }).then(user => {
+
+        User.verifyPassword('testpass8', user).then(res => {
+          console.log(res);
+        });
+        //user.verifyPassword('testpass8', user);
+      });
+    });
 
   Create a household:
 

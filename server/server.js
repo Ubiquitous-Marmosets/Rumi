@@ -61,7 +61,7 @@ app.post('/login', (req, res) => {
         res.redirect('/signup');
       } else {
         // if there is a user with that email, now we have to verify the password
-        if (user.verifyPassword(req.body.password)) {
+        if (User.verifyPassword(req.body.password, user)) {
           console.log('successful sign in');
           res.redirect('/');
         } else { // if the password failed
