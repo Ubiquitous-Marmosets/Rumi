@@ -1,7 +1,7 @@
 var db = require('./sequelize.js');
 var Sequelize = require('sequelize');
 
-var Task = db.define('event', {
+var Task = db.define('task', {
   name: {
     type: Sequelize.STRING,
     allowNull: false

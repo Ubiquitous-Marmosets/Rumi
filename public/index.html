@@ -5,6 +5,17 @@
     <title>Rumi</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      let cl = console.log.bind(console);
+      socket.on('create task', cl);
+      socket.on('update task', cl);
+      socket.on('delete task', cl);
+      // socket.emit('create task', {name: 'new task 1 yo'});
+      // socket.emit('update task', {id: 2, name: 'updated task, yo! whoop'})
+      socket.emit('delete task', 3);
+    </script>
   </head>
   <body>
   <div id="app"></div>
