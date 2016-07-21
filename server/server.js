@@ -6,7 +6,7 @@ let passport = require('passport');
 let LocalStrategy = require('passport-local');
 let FacebookStrategy = require('passport-facebook').Strategy;
 let User = require('./models/User');
-let decorate = require('./alphadeltaninerniner.service.js');
+let decorate = require('./alphadeltaninerniner.service');
 
 checkForEnvironmentVariables(['FB_ID', 'FB_SECRET', 'SESSION_SECRET']);
 

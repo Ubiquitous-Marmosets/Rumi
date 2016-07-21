@@ -73,6 +73,7 @@ function decorate(app) {
    * @param  {object} id ID of a Task
    */
   function completeTask(id) {
+    // TODO : add userId to Completed
     return Completed.create({}).then(completed => {
       Task.findById(id).then(task => {
         return task.addCompleted(completed);
