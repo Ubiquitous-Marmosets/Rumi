@@ -21,14 +21,18 @@
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "express-session": "^1.14.0",
+    "material-ui": "^0.15.2",
+    "moment": "^2.14.1",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "passport-local": "^1.0.0",
     "pg": "^6.0.2",
     "pg-hstore": "^2.3.2",
     "react": "^15.2.1",
+    "react-bootstrap": "^0.29.5",
     "react-dom": "^15.2.1",
     "react-router": "^2.5.2",
+    "react-tap-event-plugin": "^1.0.0",
     "sequelize": "^3.23.4",
     "socket.io": "^1.4.8"
   }
