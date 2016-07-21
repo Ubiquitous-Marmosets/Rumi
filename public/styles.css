@@ -1,0 +1,35 @@
+* {
+  background-color: #fbe2b4;
+}
+
+.circle {
+  width: 70px;
+  height: 70px;
+  background-color: #ffc33c;
+  border-radius: 100%;
+  text-align: center;
+  line-height: 45px;
+  padding: 15px;
+  overflow: hidden;
+}
+.circle div {
+  font-size: 0.7em;
+  line-height: normal;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.bar {
+  margin-bottom: 5px;
+  background-color: #59c4c5;
+  border: 1px solid black;
+
+}
+.gray {
+  font-size: 0.5em;
+  color: gray;
+}
+
+.all {
+  background-color: #00c8f8;
+}
