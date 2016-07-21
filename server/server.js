@@ -6,6 +6,7 @@ let passport = require('passport');
 let LocalStrategy = require('passport-local');
 let FacebookStrategy = require('passport-facebook').Strategy;
 let User = require('./models/User');
+let decorate = require('./alphadeltaninerniner.service');
 
 checkForEnvironmentVariables(['FB_ID', 'FB_SECRET', 'SESSION_SECRET']);
 
@@ -49,6 +50,7 @@ app.use(session({secret: process.env.SESSION_SECRET}));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(passport.initialize());
 app.use(passport.session());
+let server = decorate(app);
 
 // create user, hash password, and store in db
 // Sign In:
@@ -95,7 +97,7 @@ app.get('/logout', (req, res) => {
 
 // exports
 
-module.exports = app;
+module.exports = server;
 
 // helper functions
 
