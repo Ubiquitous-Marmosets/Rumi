@@ -11,10 +11,14 @@
       let cl = console.log.bind(console);
       socket.on('create task', cl);
       socket.on('update task', cl);
-      socket.on('delete task', cl);
+      socket.on('archive task', cl);
+      socket.on('unarchive task', cl);
+      socket.on('complete task', cl);
       // socket.emit('create task', {name: 'new task 1 yo'});
       // socket.emit('update task', {id: 2, name: 'updated task, yo! whoop'})
-      socket.emit('delete task', 3);
+      // socket.emit('archive task', 1);
+      // socket.emit('unarchive task');
+      // socket.emit('complete task', 1);
     </script>
   </head>
   <body>

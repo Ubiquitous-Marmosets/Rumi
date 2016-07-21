@@ -13,7 +13,11 @@ var Task = db.define('task', {
   image: {
     type: Sequelize.STRING,
     allowNull: true
-  }
+  },
+  isArchived: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true
+  },
 });
 
 module.exports = Task;

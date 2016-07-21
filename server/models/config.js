@@ -14,6 +14,8 @@ User.hasMany(Completed);
 Completed.belongsTo(User);
 Completed.belongsTo(Task); //left is source and right is target
 
+db.sync();
+
 /*
   Create a user:
 

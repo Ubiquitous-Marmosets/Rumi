@@ -5,6 +5,4 @@ var db = new Sequelize('rumi', 'rumi', '', {
   dialect: 'postgres',
 });
 
-db.sync();
-
 module.exports = db;
