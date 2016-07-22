@@ -18,15 +18,13 @@ class AddTask extends React.Component {
     });
   }
 
-  open(e) {
-    e.preventDefault();
+  open() {
     this.setState({
       showModal: true
     });
   }
 
   handleTaskNameChange(e) {
-    console.log(this.state.taskName);
     this.setState({
       taskName: e.target.value
     });
@@ -42,9 +40,6 @@ class AddTask extends React.Component {
     e.preventDefault();
     let taskName = this.state.taskName;
     let dueDate =  this.state.taskDueDate;
-
-    console.log(taskName);
-    console.log(dueDate);
 
     if (!taskName || !dueDate) {
       this.close();
@@ -78,7 +73,6 @@ class AddTask extends React.Component {
           <input type="date" name="dueDate" onChange={this.handleTaskDueDateChange.bind(this)}/>
         </Modal.Body>
         <Modal.Footer>
-          {/*<Button onClick={this.close.bind(this)}>Cancel</Button>*/}
           <Button onClick={this.handleSubmit.bind(this)}>Add Task</Button>
         </Modal.Footer>
         </Modal>
