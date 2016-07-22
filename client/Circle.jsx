@@ -1,29 +1,51 @@
 import React from 'react';
 import Paper from 'material-ui/Paper';
 
-const style = {
+let style = {
   height: 50,
   width: 50,
   margin: 10,
   textAlign: 'center',
   display: 'inline-block',
+  overflow: 'hidden'
 };
 
-let test = () => {
-  console.log('button hit');
-};
+class Circle extends React.Component {
+  constructor(props) {
+    super(props);
 
-/*
-  props: {
-    urgentTasK: String
+    this.state = {
+      id: this.props.id,
+      name: this.props.name,
+      due: this.props.due,
+      overdue: this.props.overdue
+    }
   }
-*/
-const Circle = ({name, dueBy}) => (
-  <Paper style={style} zDepth={3} circle={true} onTouchTap={test}>
-    <div className="baby">
-      {name}
-    </div>
-  </Paper>
-);
+
+  componentWillMount() {
+    this.state.overdue ? (style.border = '2px solid red') : (style.border = '2px solid yellow');
+  }
+
+  render() {
+    let completeTask = () => {
+      socket.emit('complete task', '1');
+    };
+
+    return (
+      <div>
+        <Paper
+          style={style}
+          zDepth={3}
+          circle={true}
+          onTouchTap={completeTask}
+        >
+          <div className="innerCircleText">
+            {this.state.name}
+          </div>
+        </Paper>
+      </div>
+    );
+  }
+}
 
 export default Circle;
