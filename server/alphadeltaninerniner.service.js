@@ -74,13 +74,12 @@ function decorate(app) {
    */
   function completeTask(id) {
     // TODO : add userId to Completed
-    return Completed.create({}).then(completed => {
-      Task.findById(id).then(task => {
-        return task.addCompleted(completed);
-      }).then(what => {
-        io.emit('complete task', what);
-      });
+    return Task.findById(id).then(task => {
+      return task.complete();
     })
+    .then(task => {
+      io.emit('complete task', task);
+    });
   }
 
   /**
