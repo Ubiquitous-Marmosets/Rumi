@@ -46,7 +46,13 @@ class AddTask extends React.Component {
       return;
     }
 
-    this.props.onAddNewTask(taskName, dueDate);
+    socket.emit('create task', {
+      name: taskName,
+      dueBy: dueDate,
+      interval: 3241234 // currently hardcoded, will need to be accounted for in future
+    });
+
+    //this.props.onAddNewTask(taskName, dueDate);
     this.setState({
       taskName: '',
       taskDueDate: ''
@@ -57,20 +63,17 @@ class AddTask extends React.Component {
   render() {
     return(
       <div onClick={this.open.bind(this)}>
-        <img src="http://bit.ly/29UZrXq"/>
-        <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
+        <img className="addTask" src="http://bit.ly/29UZrXq"/>
+        <Modal bsSize="small" show={this.state.showModal} onHide={this.close.bind(this)}>
         <Modal.Header closeButton>
           <Modal.Title>Add Task</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form method="POST" onSubmit={this.handleSubmit.bind(this)}>
-          <input type="text" name="newTask" placeholder="add task" onChange={this.handleTaskNameChange.bind(this)}/>
+          <input type="text" name="newTask" placeholder="Enter a new task!" onChange={this.handleTaskNameChange.bind(this)}/>
           <input type="date" name="dueDate" onChange={this.handleTaskDueDateChange.bind(this)}/>
-          <input type="submit" value="Add Task"/>
-          </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.close.bind(this)}>Cancel</Button>
+          <Button onClick={this.handleSubmit.bind(this)}>Add Task</Button>
         </Modal.Footer>
         </Modal>
       </div>

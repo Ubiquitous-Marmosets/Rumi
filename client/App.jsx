@@ -1,87 +1,120 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, Link } from 'react-router'
-import Login from './Login.jsx'
-
-import Task from './Task.jsx';
-import Completed from './Completed.jsx';
-
-
-/* Test Data inserted here */
-var data = require('./fakeData');
-// Somehow determines the 5 or fewer most urgent tasks to be complete
-var urgentTasks = data.allTasks;//.slice(0, 2);
-var completedTasks = data.allCompletedTasks;
-
+//import { Router, Route, Link } from 'react-router'
+//import Login from './Login.jsx'
 
 // Necessary for Material-UI
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
 // Necessary for simple Mobile/Web click functionality on components
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
+// Provides 'a few seconds ago' and 'in 2 hours' to time Data
+import moment from 'moment';
 
 // Components we have built
 import Navbar from './Navbar.jsx';
-import Circle from './Circle.jsx';
+import Task from './Task.jsx';
 import Comp from './Comp.jsx';
 
+import AddTask from './AddTask.jsx';
 
-//import Avatar from 'material-ui/Avatar';
-//import Chip from 'material-ui/Chip';
-//import FontIcon from 'material-ui/FontIcon';
+/* Test Data inserted here */
+let fake = require('./fakeData');
+let urgency = require('./urgency.service');
 
-//import AppBar from 'material-ui/AppBar';
-
-let test = () => {
-  console.log('test click worked');
-}
+/* Necessary for original run, to create some tasks in the database.
+    let allTasks = fake.allTasks;
+    import createFakeTasks from './createTasks';
+    createFakeTasks(allTasks);
+*/
 
 class App extends React.Component {
   constructor() {
     super();
 
+    let allTasks = urgency.prioritizeTasks(fake.allTasks);
+
     this.state = {
-      urgentTasks: urgentTasks,
-      completedTasks: completedTasks
+      overdueTasks: allTasks.overdue,
+      urgentTasks: allTasks.urgent,
+      completedTasks: allTasks.recent,
     }
   }
 
   render() {
+
     return (
-      <MuiThemeProvider>
+      <MuiThemeProvider className="container">
         <div>
+
+          {/* If you want to see a client side log of state */}
+          {console.log('overdue', this.state.overdueTasks)}
+          {console.log('urgent', this.state.urgentTasks)}
+          {console.log('completed', this.state.completedTasks)}
+
           <Navbar />
 
           <div className="row">
-            <div className="col-xs-10">
+            <div className="col-xs-2 col-xs-offset-5">
+              <AddTask/>
+            </div>
+            <div className="col-xs-12">
+              {/* Create the overdueTask bubbles */}
+              {this.state.overdueTasks.map((overdueTask, i) => {
+                return (
+                  <div className="col-xs-2" key={i}>
+                    <Task
+                      id={overdueTask.id}
+                      name={overdueTask.name}
+                      due={moment().endOf(overdueTask.dueBy).fromNow()}
+                      overdue={true}
+                    />
+                  </div>
+                );
+              })}
+
               {/* Create the urgentTask bubbles */}
               {this.state.urgentTasks.map((urgentTask, i) => {
-                let urgentTaskName = urgentTask.name;
-                let urgentTaskDueBy = urgentTask.dueBy.toString();
-                console.log(urgentTaskDueBy);
                 return (
-                  <div className="col-xs-3">
-                    <Circle name={urgentTaskName} dueBy={urgentTaskDueBy} key={i}/>
+                  <div className="col-xs-2" key={i}>
+                    <Task
+                      id={urgentTask.id}
+                      name={urgentTask.name}
+                      due={moment().endOf(urgentTask.dueBy).fromNow()}
+                      overdue={false}
+                      />
                   </div>
                 );
               })}
             </div>
-            <div className="col-xs-2">
-              <div className="showAll" onTouchTap={test}>
-              </div>
-            </div>
           </div>
+
+            {/*
+              Scrapping this button due to unnecessary time spent styling:
+              Proposal: add it to the drop down in the top right or at the top
+              That way it will only have sign out and create a task
+              Better in terms of MVP, as opposed to real use
+
+              <div className="col-xs-2">
+                <div className="showAll" onTouchTap={test}></div>
+              </div>
+
+            */}
 
           {/* Create the completedTasks cards */}
           {this.state.completedTasks.map((completedTask, i) => {
-            let completedTaskName = completedTask.userId;
-            let completedTaskUser = completedTask.taskId;
             return (
-              <Comp task={completedTaskName} user={completedTaskUser} key={i}/>
+              <Comp
+                id={completedTask.id}
+                name={completedTask.name}
+                due={moment().startOf(completedTask.dueBy).fromNow()}
+                user={'Trevor'}
+                key={i}
+              />
             );
           })}
+
         </div>
       </MuiThemeProvider>
     );
