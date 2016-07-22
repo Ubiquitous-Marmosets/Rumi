@@ -54,7 +54,7 @@ let server = decorate(app);
 
 // create user, hash password, and store in db
 // Sign In:
-app.post('/login', (req, res) => {
+app.post('/auth/local', (req, res) => {
 
   User.findOne({where: {email: req.body.email}})
     .then((user) => {
@@ -74,6 +74,23 @@ app.post('/login', (req, res) => {
     });
 });
 
+app.post ('/auth/local/signup', (req, res) => {
+  User.findOne({where: {email: req.body.email}})
+  .then(user => {
+    if (user) {
+      console.err('Account already exits for entered email.');
+      res.end();
+    } else {
+      User.create({
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password
+      });
+      //TODO: Create Session and login, redirect appropriately
+      res.end();
+    }
+  });
+});
 app.post('/auth/local',
   passport.authenticate('local', {
     failureRedirect: '/login'
