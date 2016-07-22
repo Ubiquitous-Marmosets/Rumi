@@ -10,6 +10,10 @@ var Task = db.define('task', {
     type: Sequelize.DATE,
     allowNull: true
   },
+  interval: {
+    type: Sequelize.NUMBER,
+    allowNull: false
+  },
   image: {
     type: Sequelize.STRING,
     allowNull: true
