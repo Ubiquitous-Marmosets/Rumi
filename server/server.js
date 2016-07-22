@@ -47,6 +47,7 @@ passport.use(new FacebookStrategy({
 let app = express();
 app.use(express.static(__dirname + '/../public'));
 app.use(session({secret: process.env.SESSION_SECRET}));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -75,19 +76,22 @@ app.post('/auth/local', (req, res) => {
 });
 
 app.post ('/auth/local/signup', (req, res) => {
+  console.log(req.body);
   User.findOne({where: {email: req.body.email}})
   .then(user => {
     if (user) {
-      console.err('Account already exits for entered email.');
+      console.error('Account already exits for entered email.');
       res.end();
     } else {
       User.create({
         email: req.body.email,
-        username: req.body.username,
+        name: req.body.name,
         password: req.body.password
-      });
+      }).then(user => {
       //TODO: Create Session and login, redirect appropriately
-      res.end();
+        console.log('User created: ', user);
+        res.end();
+      });
     }
   });
 });
