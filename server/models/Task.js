@@ -1,5 +1,6 @@
-var db = require('./sequelize.js');
+var db = require('./sequelize');
 var Sequelize = require('sequelize');
+var Completed = require('./completed');
 
 var Task = db.define('task', {
   name: {
@@ -22,7 +23,16 @@ var Task = db.define('task', {
     type: Sequelize.BOOLEAN,
     allowNull: true
   },
+}, {
+  instanceMethods: {
+    complete: function() {
+      return Completed.create({}).then(completed => {
+        this.dueBy = new Date(this.dueBy).getTime() + this.interval;
+        this.addCompleted(completed);
+        return this.save();
+      });
+    }
+  }
 });
 
 module.exports = Task;
-
