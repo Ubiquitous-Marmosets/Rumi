@@ -19,9 +19,16 @@ const Comp = ({id, name, due, user}) => (
 
 export default Comp;
 
+/*
+Onclick of completed tasks, can show additional information.
+This functionality can easily be re-added, but I am not sure if it is necessary.
 
-// actAsExpander={true}
-// showExpandableButton={true}
-// <CardText expandable={true}>
-//   {`${user} completed ${name} ${due}`}
-// </CardText>
+props on CardHeader:
+  actAsExpander={true}
+  showExpandableButton={true}
+
+comp below CardHeader:
+  <CardText expandable={true}>
+    {`${user} completed ${name} ${due}`}
+  </CardText>
+*/

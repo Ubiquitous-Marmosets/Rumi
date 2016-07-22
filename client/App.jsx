@@ -9,20 +9,25 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
+// Provides 'a few seconds ago' and 'in 2 hours' to time Data
 import moment from 'moment';
 
 // Components we have built
 import Navbar from './Navbar.jsx';
-import Circle from './Circle.jsx';
+import Task from './Task.jsx';
 import Comp from './Comp.jsx';
+
+import AddTask from './AddTask.jsx';
 
 /* Test Data inserted here */
 let fake = require('./fakeData');
 let urgency = require('./urgency.service');
 
-// var completedTasks = urgency.prioritizeTasks([fake.allTasks]);
-// var urgentTasks = urgency.prioritizeTasks([fake.allTasks]);
-// var overdueTasks = urgency.prioritizeTasks([fake.allTasks]);
+/* Necessary for original run, to create some tasks in the database.
+    let allTasks = fake.allTasks;
+    import createFakeTasks from './createTasks';
+    createFakeTasks(allTasks);
+*/
 
 class App extends React.Component {
   constructor() {
@@ -42,19 +47,24 @@ class App extends React.Component {
     return (
       <MuiThemeProvider className="container">
         <div>
+
+          {/* If you want to see a client side log of state */}
           {console.log('overdue', this.state.overdueTasks)}
           {console.log('urgent', this.state.urgentTasks)}
           {console.log('completed', this.state.completedTasks)}
+
           <Navbar />
 
           <div className="row">
+            <div className="col-xs-2 col-xs-offset-5">
+              <AddTask/>
+            </div>
             <div className="col-xs-12">
               {/* Create the overdueTask bubbles */}
-
               {this.state.overdueTasks.map((overdueTask, i) => {
                 return (
                   <div className="col-xs-2" key={i}>
-                    <Circle
+                    <Task
                       id={overdueTask.id}
                       name={overdueTask.name}
                       due={moment().endOf(overdueTask.dueBy).fromNow()}
@@ -65,11 +75,10 @@ class App extends React.Component {
               })}
 
               {/* Create the urgentTask bubbles */}
-
               {this.state.urgentTasks.map((urgentTask, i) => {
                 return (
                   <div className="col-xs-2" key={i}>
-                    <Circle
+                    <Task
                       id={urgentTask.id}
                       name={urgentTask.name}
                       due={moment().endOf(urgentTask.dueBy).fromNow()}
@@ -79,38 +88,33 @@ class App extends React.Component {
                 );
               })}
             </div>
+          </div>
+
             {/*
               Scrapping this button due to unnecessary time spent styling:
-              Proposal: add it to the drop down in the top right
+              Proposal: add it to the drop down in the top right or at the top
               That way it will only have sign out and create a task
+              Better in terms of MVP, as opposed to real use
 
               <div className="col-xs-2">
                 <div className="showAll" onTouchTap={test}></div>
               </div>
 
             */}
-          </div>
 
           {/* Create the completedTasks cards */}
-
           {this.state.completedTasks.map((completedTask, i) => {
             return (
-                <Comp
-                  id={completedTask.id}
-                  name={completedTask.name}
-                  due={moment().startOf(completedTask.dueBy).fromNow()}
-                  user={'Trevor'}
-                />
+              <Comp
+                id={completedTask.id}
+                name={completedTask.name}
+                due={moment().startOf(completedTask.dueBy).fromNow()}
+                user={'Trevor'}
+                key={i}
+              />
             );
           })}
 
-          {/*this.state.completedTasks.map((completedTask, i) => {
-            let completedTaskName = completedTask.userId;
-            let completedTaskUser = completedTask.taskId;
-            return (
-              <Comp task={completedTaskName} user={completedTaskUser} key={i}/>
-            );
-          })*/}
         </div>
       </MuiThemeProvider>
     );
