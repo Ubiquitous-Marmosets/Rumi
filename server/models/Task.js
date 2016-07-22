@@ -11,7 +11,7 @@ var Task = db.define('task', {
     allowNull: true
   },
   interval: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     allowNull: false
   },
   image: {
