@@ -74,10 +74,7 @@ function decorate(app) {
    */
   function completeTask(id) {
     // TODO : add userId to Completed
-    return Task.findById(id).then(task => {
-      return task.complete();
-    })
-    .then(task => {
+    return Task.findById(id).then(task => task.complete()).then(task => {
       io.emit('complete task', task);
     });
   }
