@@ -3,6 +3,9 @@ let socketIo = require('socket.io');
 let Task = require('./models/Task');
 let Completed = require('./models/Completed');
 
+// Socket is the one in particular who is sending us stuff
+// IO.emit is sending to everyone
+
 /**
  * Decorates an express application with our
  * alpha delta niner niner super duper web sockets service.
@@ -28,6 +31,8 @@ function decorate(app, session) {
     socket.on('archive task', archiveTask);
     socket.on('unarchive task', notYetImplemented.bind(null, 'unarchive task'));
     socket.on('complete task', completeTask(socket.request.session.passport.user));
+
+    socket.on('get all tasks', getAllTasks(socket));
 
     socket.on('disconnect', () => {
       console.log('disconnected');
@@ -82,6 +87,19 @@ function decorate(app, session) {
     return id => {
       return Task.findById(id).then(task => task.complete(userId)).then(task => {
         io.emit('complete task', task);
+      });
+    };
+  }
+
+  function getAllTasks(socket) {
+    return () => {
+      return Task.findAll().then(tasks => {
+        //return tasks;
+        //socket.on('get all tasks');
+
+        socket.emit('sending all tasks', tasks);
+
+        //io.('get all tasks', tasks);
       });
     };
   }
