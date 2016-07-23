@@ -56,17 +56,20 @@ routes.post('/auth/local',
 );
 
 routes.post('/auth/local/register', (req, res) => {
-  User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
-  })
-  .then(user => {
-    // TODO : add auto login?
-    res.redirect('/');
-  })
-  .catch((err) => {
-    res.send(err.message);
+  User.findByEmail(req.body.email).then(user => {
+    if (user) {
+      console.error('Account already exists for entered email.');
+      res.end();
+    } else {
+      User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+      }).then(user => {
+        // TODO : add auto login?
+        res.redirect('/login.html');
+      });
+    }
   });
 });
 
