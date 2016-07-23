@@ -9,7 +9,6 @@ let Completed = require('./models/Completed');
  * @param  {ExpressApp} app An express web app (e.g. let app = express())
  * @return {HttpServer}     An http server with alphadeltaninerniner superpowers
  */
-function decorate(app) {
 function decorate(app, session) {
   let server = http.Server(app);
   let io = socketIo(server);
@@ -17,6 +16,10 @@ function decorate(app, session) {
     session(socket.request, socket.request.res, next);
   });
   io.on('connection', socket => {
+    if (!socket.request.session.passport) {
+      socket.emit('error', {message: 'Please reauthenticate'});
+      return;
+    }
     console.log('connected');
 
     socket.on('create task', createTask);
@@ -24,7 +27,7 @@ function decorate(app, session) {
     socket.on('update task', updateTask);
     socket.on('archive task', archiveTask);
     socket.on('unarchive task', notYetImplemented.bind(null, 'unarchive task'));
-    socket.on('complete task', completeTask);
+    socket.on('complete task', completeTask(socket.request.session.passport.user));
 
     socket.on('disconnect', () => {
       console.log('disconnected');
@@ -75,11 +78,13 @@ function decorate(app, session) {
    * connected clients
    * @param  {object} id ID of a Task
    */
-  function completeTask(id) {
-    // TODO : add userId to Completed
-    return Task.findById(id).then(task => task.complete()).then(task => {
-      io.emit('complete task', task);
-    });
+  function completeTask(userId) {
+    return id => {
+      console.log('userId', userId, 'id', id);
+      return Task.findById(id).then(task => task.complete(userId)).then(task => {
+        io.emit('complete task', task);
+      });
+    };
   }
 
   /**
