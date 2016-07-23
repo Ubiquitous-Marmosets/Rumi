@@ -10,8 +10,12 @@ let Completed = require('./models/Completed');
  * @return {HttpServer}     An http server with alphadeltaninerniner superpowers
  */
 function decorate(app) {
+function decorate(app, session) {
   let server = http.Server(app);
   let io = socketIo(server);
+  io.use((socket, next) => {
+    session(socket.request, socket.request.res, next);
+  });
   io.on('connection', socket => {
     console.log('connected');
 
