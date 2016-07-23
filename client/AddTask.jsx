@@ -1,14 +1,19 @@
 import React from 'react';
-import {Modal} from 'react-bootstrap';
-import {Button} from 'react-bootstrap';
+import {Modal, Button} from 'react-bootstrap';
+import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 
 class AddTask extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      intervalNum: 0,
+      intervalVal: 1,
       showModal: false,
       taskName: '',
-      taskDueDate: ''
+      taskDueDate: '',
+      taskInterval: 0
     };
   }
 
@@ -24,22 +29,41 @@ class AddTask extends React.Component {
     });
   }
 
-  handleTaskNameChange(e) {
+  handleTextFieldChange(e) {
+    var obj = {};
+    obj[e.target.name] = e.target.value;
+    this.setState(obj);
+  }
+
+  handleSelectFieldChange(e, i, v) {
     this.setState({
-      taskName: e.target.value
+      intervalVal: v
     });
   }
 
-  handleTaskDueDateChange(e) {
-    this.setState({
-      taskDueDate: e.target.value
-    });
+  calcDueDateAndInterval() {
+    let hours = n => 1000*60*60*n;
+    let days = n => hours(n) * 24;
+
+    let n = this.state.intervalNum;
+
+    // 1 = hours; 2 = days
+    if (this.state.intervalVal === 1) {
+      this.state.taskInterval = hours(n);
+    } else if (this.state.intervalVal === 2) {
+      this.state.taskInterval = days(n);
+    }
+
+    this.state.taskDueDate = new Date(Date.now() + this.state.taskInterval);
   }
 
   handleSubmit(e) {
     e.preventDefault();
+    this.calcDueDateAndInterval();
+
     let taskName = this.state.taskName;
     let dueDate =  this.state.taskDueDate;
+    let interval = this.state.taskInterval;
 
     if (!taskName || !dueDate) {
       this.close();
@@ -49,7 +73,7 @@ class AddTask extends React.Component {
     socket.emit('create task', {
       name: taskName,
       dueBy: dueDate,
-      interval: 3241234 // currently hardcoded, will need to be accounted for in future
+      interval: interval
     });
 
     //this.props.onAddNewTask(taskName, dueDate);
@@ -69,8 +93,12 @@ class AddTask extends React.Component {
           <Modal.Title>Add Task</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input type="text" name="newTask" placeholder="Enter a new task!" onChange={this.handleTaskNameChange.bind(this)}/>
-          <input type="date" name="dueDate" onChange={this.handleTaskDueDateChange.bind(this)}/>
+          <TextField name="taskName" hintText="Enter a new task!" onChange={this.handleTextFieldChange.bind(this)}/>
+          <TextField type="number" name="intervalNum" defaultValue="1" onChange={this.handleTextFieldChange.bind(this)}  floatingLabelText="Recurs every:" floatingLabelFixed={true} />
+          <SelectField value={this.state.intervalVal} onChange={this.handleSelectFieldChange.bind(this)}>
+            <MenuItem value={1} primaryText="hour(s)" />
+            <MenuItem value={2} primaryText="day(s)" />
+          </SelectField>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.handleSubmit.bind(this)}>Add Task</Button>
@@ -83,8 +111,6 @@ class AddTask extends React.Component {
 
 export default AddTask;
 /*  code to add to App.jsx
-
-import AddTask from './AddTask.jsx'
 
 *** component to add to App.jsx ***
 <div>
@@ -100,8 +126,4 @@ handleAddNewTask(taskName, dueDate) {
   console.log('taskName:', taskName);
   console.log('dueDate:', dueDate);
 }
-
 */
-
-// code idea...
-// <Button bsStyle="primary" type="submit" onClick={this.postOrSaveFunction}>Add</Button>
