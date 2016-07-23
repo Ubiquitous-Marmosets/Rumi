@@ -1,5 +1,8 @@
 let server = require('./server');
+let db = require('./models/config');
 
-server.listen(3000, () => {
-  console.log('Listening on port 3000');
+db.sync().then(() => {
+  server.listen(3000, () => {
+    console.log('Listening on port 3000');
+  });
 });
