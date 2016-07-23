@@ -40,15 +40,9 @@ User.findByEmail = function(email) {
   return User.findOne({where: {email}});
 }
 
-// User.verifyPassword = function(enteredPassword, user) {
-//   return pCompare(enteredPassword, user.password);
-// };
-
 User.beforeCreate((user, options) => {
   return pHash(user.password, null, null).then(hash => {
     user.password = hash;
-    //user.set('password', hash); user.password = and user.set work the same
-    //return user; // works without
   });
 });
 
