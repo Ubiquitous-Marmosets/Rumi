@@ -17,7 +17,7 @@ function decorate(app, session) {
   });
   io.on('connection', socket => {
     if (!socket.request.session.passport) {
-      socket.emit('error', {message: 'Please reauthenticate'});
+      socket.emit('rumi error', {message: 'Please reauthenticate'});
       return;
     }
     console.log('connected');
@@ -80,7 +80,6 @@ function decorate(app, session) {
    */
   function completeTask(userId) {
     return id => {
-      console.log('userId', userId, 'id', id);
       return Task.findById(id).then(task => task.complete(userId)).then(task => {
         io.emit('complete task', task);
       });

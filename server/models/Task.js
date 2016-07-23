@@ -30,7 +30,6 @@ var Task = db.define('task', {
       return Completed.create().then(completed => {
         return User.findById(userId).then(user => {
           completed.setUser(user);
-          console.log(completed);
           return completed.save();
         }).then(completed => {
           this.dueBy = new Date(this.dueBy).getTime() + this.interval;

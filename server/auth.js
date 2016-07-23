@@ -6,12 +6,10 @@ let FacebookStrategy = require('passport-facebook').Strategy;
 let User = require('./models/User');
 
 passport.serializeUser((user, done) => {
-  console.log('serialize', user.id);
   done(null, user.id);
 });
 passport.deserializeUser((id, done) => {
   User.findById(id).then(user => {
-    console.log('deserialize', user);
     done(null, user);
   })
 });
