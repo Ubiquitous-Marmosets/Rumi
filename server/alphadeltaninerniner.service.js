@@ -20,8 +20,7 @@ function decorate(app, session) {
   });
   io.on('connection', socket => {
     if (!socket.request.session.passport) {
-      socket.emit('rumi error', {message: 'Please reauthenticate'});
-      return;
+      return socket.emit('rumi error', {message: 'Please reauthenticate'});
     }
     console.log('connected');
 
