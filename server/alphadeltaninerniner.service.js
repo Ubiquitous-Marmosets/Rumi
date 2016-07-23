@@ -33,6 +33,7 @@ function decorate(app, session) {
     socket.on('complete task', completeTask(socket.request.session.passport.user));
 
     socket.on('get all tasks', getAllTasks(socket));
+    socket.on('get completeds', getCompleteds(socket));
 
     socket.on('disconnect', () => {
       console.log('disconnected');
@@ -102,6 +103,14 @@ function decorate(app, session) {
         //io.('get all tasks', tasks);
       });
     };
+  }
+
+  function getCompleteds(socket) {
+    return () => {
+      return Completed.findAll({ order: [['id', 'DESC']], limit: 5 }).then(completeds => {
+        socket.emit('sending completeds', completeds);
+      });
+    }
   }
 
   /**

@@ -2,6 +2,7 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 import socket from './socketio.js';
 
+
 let style = {
   height: 50,
   width: 50,
@@ -21,6 +22,12 @@ class Task extends React.Component {
       due: this.props.due,
       color: this.props.color
     }
+
+  }
+
+  completeTask () {
+    socket.emit('complete task', this.state.id);
+    console.log(socket);
   }
 
   componentWillMount() {
@@ -34,10 +41,6 @@ class Task extends React.Component {
   }
 
   render() {
-    
-    let completeTask = () => {
-      socket.emit('complete task', this.state.id);
-    };
 
     return (
       <div>
@@ -45,7 +48,7 @@ class Task extends React.Component {
           style={style}
           zDepth={3}
           circle={true}
-          onTouchTap={completeTask}
+          onTouchTap={this.completeTask.bind(this)}
         >
           <div className="innerTaskText">
             {this.state.name}

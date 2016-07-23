@@ -3,6 +3,7 @@ import {Modal, Button} from 'react-bootstrap';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import socket from './socketio';
 
 class AddTask extends React.Component {
   constructor(props) {

@@ -67,10 +67,10 @@ class App extends React.Component {
 
   componentWillMount() {
     socket.emit('get all tasks');
+    socket.emit('get completeds');
   }
 
-  render() {
-
+  componentDidMount() {
     socket.on('sending all tasks', function(tasks) {
 
       var t = urgency.prioritizeTasks(tasks);
@@ -84,29 +84,40 @@ class App extends React.Component {
         //t.recent
         //Tasks: t.recent
       });
-
       //this.setState(allTasks);
-
       //console.log(this.state);
     }.bind(this));
 
-    socket.on('complete task', function(completedTask) {
 
+    socket.on('sending completeds', completedTasks => {
+      //var cts = this.state.completedTasks;
+      //cts.unshift(completedTasks);
+
+      this.setState({
+        completedTasks: completedTasks
+      });
+      //console.log(completedTasks);
+      //console.log(completedTasks);
+    });
+
+
+
+
+    socket.on('complete task', function(completedTask) {
       var cs = this.state.completedTasks;
 
-      // console.log('111111111111', cs);
-      cs.push(completedTask);
-      // console.log('222222222222', cs);
+      cs.unshift(completedTask);
 
-      //
-      // console.log(cs);
-      // console.log(completedTask);
-      //
       this.setState({
         completedTasks: cs
       });
-      console.log(completedTask);
-    }.bind(this))
+
+    }.bind(this));
+
+
+  }
+
+  render() {
 
     return (
       <MuiThemeProvider className="container">
@@ -188,7 +199,7 @@ class App extends React.Component {
                 name={completedTask.name}
                 due={moment().startOf(completedTask.dueBy).fromNow()}
                 user={'Trevor'}
-                key={i}
+                key={completedTask.id}
               />
             );
           })}
