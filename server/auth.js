@@ -55,6 +55,21 @@ routes.post('/auth/local',
   })
 );
 
+routes.post('/auth/local/register', (req, res) => {
+  User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password
+  })
+  .then(user => {
+    // TODO : add auto login?
+    res.redirect('/');
+  })
+  .catch((err) => {
+    res.send(err.message);
+  });
+});
+
 routes.get('/auth/facebook', passport.authenticate('facebook'));
 
 routes.get('/auth/facebook/return',
