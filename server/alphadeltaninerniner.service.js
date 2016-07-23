@@ -2,7 +2,6 @@ let http = require('http');
 let socketIo = require('socket.io');
 let Task = require('./models/Task');
 let Completed = require('./models/Completed');
-require('./models/config.js');
 
 /**
  * Decorates an express application with our
@@ -10,10 +9,17 @@ require('./models/config.js');
  * @param  {ExpressApp} app An express web app (e.g. let app = express())
  * @return {HttpServer}     An http server with alphadeltaninerniner superpowers
  */
-function decorate(app) {
+function decorate(app, session) {
   let server = http.Server(app);
   let io = socketIo(server);
+  io.use((socket, next) => {
+    session(socket.request, socket.request.res, next);
+  });
   io.on('connection', socket => {
+    if (!socket.request.session.passport) {
+      socket.emit('rumi error', {message: 'Please reauthenticate'});
+      return;
+    }
     console.log('connected');
 
     socket.on('create task', createTask);
@@ -21,7 +27,7 @@ function decorate(app) {
     socket.on('update task', updateTask);
     socket.on('archive task', archiveTask);
     socket.on('unarchive task', notYetImplemented.bind(null, 'unarchive task'));
-    socket.on('complete task', completeTask);
+    socket.on('complete task', completeTask(socket.request.session.passport.user));
 
     socket.on('disconnect', () => {
       console.log('disconnected');
@@ -72,11 +78,12 @@ function decorate(app) {
    * connected clients
    * @param  {object} id ID of a Task
    */
-  function completeTask(id) {
-    // TODO : add userId to Completed
-    return Task.findById(id).then(task => task.complete()).then(task => {
-      io.emit('complete task', task);
-    });
+  function completeTask(userId) {
+    return id => {
+      return Task.findById(id).then(task => task.complete(userId)).then(task => {
+        io.emit('complete task', task);
+      });
+    };
   }
 
   /**

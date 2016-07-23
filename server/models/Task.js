@@ -1,6 +1,7 @@
 var db = require('./sequelize');
 var Sequelize = require('sequelize');
 var Completed = require('./completed');
+var User = require('./User');
 
 var Task = db.define('task', {
   name: {
@@ -25,11 +26,16 @@ var Task = db.define('task', {
   },
 }, {
   instanceMethods: {
-    complete: function() {
-      return Completed.create({}).then(completed => {
-        this.dueBy = new Date(this.dueBy).getTime() + this.interval;
-        this.addCompleted(completed);
-        return this.save();
+    complete: function(userId) {
+      return Completed.create().then(completed => {
+        return User.findById(userId).then(user => {
+          completed.setUser(user);
+          return completed.save();
+        }).then(completed => {
+          this.dueBy = new Date(this.dueBy).getTime() + this.interval;
+          this.addCompleted(completed);
+          return this.save();
+        });
       });
     }
   }

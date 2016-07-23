@@ -28,17 +28,21 @@ var User = db.define('user', {
     type: Sequelize.STRING,
     allowNull: true
   }
+}, {
+  instanceMethods: {
+    verifyPassword: function(password) {
+      return pCompare(password, this.password);
+    }
+  }
 });
 
-User.verifyPassword = function(enteredPassword, user) {
-  return pCompare(enteredPassword, user.password);
-};
+User.findByEmail = function(email) {
+  return User.findOne({where: {email}});
+}
 
 User.beforeCreate((user, options) => {
   return pHash(user.password, null, null).then(hash => {
     user.password = hash;
-    //user.set('password', hash); user.password = and user.set work the same
-    //return user; // works without
   });
 });
 
