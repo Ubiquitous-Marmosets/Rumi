@@ -6,7 +6,7 @@ let style = {
   padding: '6px',
 };
 
-const Comp = ({id, name, due, user}) => (
+const Comp = ({name, due, user}) => (
   <Card>
     <CardHeader
       title={name}

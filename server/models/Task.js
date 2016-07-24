@@ -27,15 +27,12 @@ var Task = db.define('task', {
 }, {
   instanceMethods: {
     complete: function(userId) {
+      this.dueBy = Date.now() + this.interval;
       return Completed.create().then(completed => {
-        return User.findById(userId).then(user => {
-          completed.setUser(user);
-          return completed.save();
-        }).then(completed => {
-          this.dueBy = new Date(this.dueBy).getTime() + this.interval;
-          this.addCompleted(completed);
-          return this.save();
-        });
+        return this.save()
+        .then(task => User.findById(userId))
+        .then(user => completed.setUser(user))
+        .then(completed => completed.setTask(this));
       });
     }
   }

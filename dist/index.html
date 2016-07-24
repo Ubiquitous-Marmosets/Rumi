@@ -9,18 +9,20 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="styles.css" media="screen" title="no title" charset="utf-8">
 
-    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
     <script>
       // TODO : Set up an actual client-side "service"
-      var socket = io();
-      let cl = console.log.bind(console);
-      // These are events we can expect to recieve from the server
-      // This is probably how we will update component states and whatnot
-      socket.on('create task', cl);
-      socket.on('update task', cl);
-      socket.on('archive task', cl);
-      socket.on('unarchive task', cl);
-      socket.on('complete task', cl);
+      // var socket = io();
+      // let cl = console.log.bind(console);
+      //These are events we can expect to recieve from the server
+      //This is probably how we will update component states and whatnot
+      // socket.on('create task', cl);
+      // socket.on('update task', cl);
+      // socket.on('archive task', cl);
+      // socket.on('unarchive task', cl);
+      // socket.on('complete task', cl);
+      // socket.on('sending all tasks', cl);
+
       // socket.emit('create task', {name: 'new task 1 yo'});
       // socket.emit('update task', {id: 2, name: 'updated task, yo! whoop'})
       // socket.emit('archive task', 1);

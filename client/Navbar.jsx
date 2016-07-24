@@ -7,10 +7,6 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import AddTask from './AddTask.jsx';
 
-let test = () => {
-  console.log('button hit');
-};
-
 let stopClose = (e) => {
   e.preventDefault()
 }
@@ -21,7 +17,7 @@ const Navbar = () => (
     title="Rumi"
     iconElementRight={
       <IconMenu iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}>
-        <MenuItem onTouchTap={test} primaryText="Sign out" />
+        <a href="/logout"><MenuItem primaryText="Sign out" /></a>
       </IconMenu>
     }
   />

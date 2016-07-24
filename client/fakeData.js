@@ -2,6 +2,10 @@ let hours = n => 1000*60*60*n;
 let days = n => hours(n) * 24;
 
 
+// When they put in a task they want it to occur every X days
+
+// 
+
 module.exports = {
   allTasks: [
     { // urgent

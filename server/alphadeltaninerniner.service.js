@@ -1,7 +1,11 @@
 let http = require('http');
 let socketIo = require('socket.io');
 let Task = require('./models/Task');
+let User = require('./models/User');
 let Completed = require('./models/Completed');
+
+// Socket is the one in particular who is sending us stuff
+// IO.emit is sending to everyone
 
 /**
  * Decorates an express application with our
@@ -17,8 +21,7 @@ function decorate(app, session) {
   });
   io.on('connection', socket => {
     if (!socket.request.session.passport) {
-      socket.emit('rumi error', {message: 'Please reauthenticate'});
-      return;
+      return socket.emit('rumi error', {message: 'Please reauthenticate'});
     }
     console.log('connected');
 
@@ -28,6 +31,9 @@ function decorate(app, session) {
     socket.on('archive task', archiveTask);
     socket.on('unarchive task', notYetImplemented.bind(null, 'unarchive task'));
     socket.on('complete task', completeTask(socket.request.session.passport.user));
+
+    socket.on('get all tasks', getAllTasks(socket));
+    socket.on('get completeds', getCompleteds(socket));
 
     socket.on('disconnect', () => {
       console.log('disconnected');
@@ -80,10 +86,35 @@ function decorate(app, session) {
    */
   function completeTask(userId) {
     return id => {
-      return Task.findById(id).then(task => task.complete(userId)).then(task => {
-        io.emit('complete task', task);
+      return Task.findById(id).then(task => task.complete(userId)).then(completed => {
+        completed.reload({ include: [ User, Task ] }).then(completed => {
+          // console.log(completed.user.name);
+          console.log('foobar', completed);
+          console.log('userId', userId);
+          io.emit('complete task', completed);
+        });
       });
     };
+  }
+
+  function getAllTasks(socket) {
+    return () => {
+      return Task.findAll().then(tasks => {
+        socket.emit('sending all tasks', tasks);
+      });
+    };
+  }
+
+  function getCompleteds(socket) {
+    return () => {
+      return Completed.findAll({
+        order: [['id', 'DESC']],
+        limit: 20,
+        include: [ Task, User ]
+      }).then(completeds => {
+        socket.emit('sending completeds', completeds);
+      });
+    }
   }
 
   /**

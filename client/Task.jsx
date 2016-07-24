@@ -1,5 +1,7 @@
 import React from 'react';
 import Paper from 'material-ui/Paper';
+import socket from './socketio.js';
+
 
 let style = {
   height: 50,
@@ -18,18 +20,27 @@ class Task extends React.Component {
       id: this.props.id,
       name: this.props.name,
       due: this.props.due,
-      overdue: this.props.overdue
+      color: this.props.color
     }
+
+  }
+
+  completeTask () {
+    socket.emit('complete task', this.state.id);
+    console.log(socket);
   }
 
   componentWillMount() {
-    this.state.overdue ? (style.border = '2px solid red') : (style.border = '2px solid yellow');
+    if (this.state.color === 0) {
+      style.border = '2px solid red';
+    } else if (this.state.color === 1) {
+      style.border = '2px solid yellow';
+    } else {
+      style.border = '2px solid green';
+    }
   }
 
   render() {
-    let completeTask = () => {
-      socket.emit('complete task', '1');
-    };
 
     return (
       <div>
@@ -37,7 +48,7 @@ class Task extends React.Component {
           style={style}
           zDepth={3}
           circle={true}
-          onTouchTap={completeTask}
+          onTouchTap={this.completeTask.bind(this)}
         >
           <div className="innerTaskText">
             {this.state.name}

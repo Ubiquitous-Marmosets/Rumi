@@ -16,30 +16,61 @@ import moment from 'moment';
 import Navbar from './Navbar.jsx';
 import Task from './Task.jsx';
 import Comp from './Comp.jsx';
-
 import AddTask from './AddTask.jsx';
 
-/* Test Data inserted here */
-let fake = require('./fakeData');
-let urgency = require('./urgency.service');
-
-/* Necessary for original run, to create some tasks in the database.
-    let allTasks = fake.allTasks;
-    import createFakeTasks from './createTasks';
-    createFakeTasks(allTasks);
-*/
+import urgency from './urgency.service';
+import socket from './socketio.js';
 
 class App extends React.Component {
   constructor() {
     super();
 
-    let allTasks = urgency.prioritizeTasks(fake.allTasks);
-
     this.state = {
-      overdueTasks: allTasks.overdue,
-      urgentTasks: allTasks.urgent,
-      completedTasks: allTasks.recent,
-    }
+      overdueTasks: [],
+      recentTasks: [],
+      urgentTasks: [],
+      completedTasks: []
+    };
+  }
+
+  componentWillMount() {
+    socket.emit('get all tasks');
+    socket.emit('get completeds');
+  }
+
+  componentDidMount() {
+    socket.on('sending all tasks', function(tasks) {
+
+      var t = urgency.prioritizeTasks(tasks);
+
+      this.setState({
+        overdueTasks: t.overdue,
+        urgentTasks: t.urgent,
+        recentTasks: t.recent
+      });
+    }.bind(this));
+
+
+    socket.on('sending completeds', completedTasks => {
+      this.setState({completedTasks});
+    });
+
+    socket.on('create task', newTask => {
+      socket.emit('get all tasks');
+    });
+
+    socket.on('complete task', function(completedTask) {
+      socket.emit('get all tasks');
+
+      var cs = this.state.completedTasks;
+      cs.unshift(completedTask);
+
+      this.setState({
+        completedTasks: cs
+      });      
+    }.bind(this));
+
+
   }
 
   render() {
@@ -47,12 +78,6 @@ class App extends React.Component {
     return (
       <MuiThemeProvider className="container">
         <div>
-
-          {/* If you want to see a client side log of state */}
-          {console.log('overdue', this.state.overdueTasks)}
-          {console.log('urgent', this.state.urgentTasks)}
-          {console.log('completed', this.state.completedTasks)}
-
           <Navbar />
 
           <div className="row">
@@ -61,28 +86,43 @@ class App extends React.Component {
             </div>
             <div className="col-xs-12">
               {/* Create the overdueTask bubbles */}
-              {this.state.overdueTasks.map((overdueTask, i) => {
+              {this.state.overdueTasks.map(overdueTask => {
                 return (
-                  <div className="col-xs-2" key={i}>
+                  <div className="col-xs-2">
                     <Task
                       id={overdueTask.id}
                       name={overdueTask.name}
                       due={moment().endOf(overdueTask.dueBy).fromNow()}
-                      overdue={true}
+                      overdue={0}
+                      key={overdueTask.id}
                     />
                   </div>
                 );
               })}
 
               {/* Create the urgentTask bubbles */}
-              {this.state.urgentTasks.map((urgentTask, i) => {
+              {this.state.urgentTasks.map(urgentTask => {
                 return (
-                  <div className="col-xs-2" key={i}>
+                  <div className="col-xs-2" key={urgentTask.id}>
                     <Task
                       id={urgentTask.id}
                       name={urgentTask.name}
                       due={moment().endOf(urgentTask.dueBy).fromNow()}
-                      overdue={false}
+                      color={1}
+                      />
+                  </div>
+                );
+              })}
+
+              {/* Create the recentTask bubbles */}
+              {this.state.recentTasks.map(recentTask => {
+                return (
+                  <div className="col-xs-3" key={recentTask.id}>
+                    <Task
+                      id={recentTask.id}
+                      name={recentTask.name}
+                      due={moment().endOf(recentTask.dueBy).fromNow()}
+                      overdue={2}
                       />
                   </div>
                 );
@@ -103,14 +143,13 @@ class App extends React.Component {
             */}
 
           {/* Create the completedTasks cards */}
-          {this.state.completedTasks.map((completedTask, i) => {
+          {this.state.completedTasks.map(completed => {
             return (
               <Comp
-                id={completedTask.id}
-                name={completedTask.name}
-                due={moment().startOf(completedTask.dueBy).fromNow()}
-                user={'Trevor'}
-                key={i}
+                name={completed.task.name}
+                due={moment(completed.createdAt).fromNow()}
+                user={completed.user.name}
+                key={completed.id}
               />
             );
           })}
