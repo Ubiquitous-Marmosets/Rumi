@@ -4,6 +4,7 @@ let LocalStrategy = require('passport-local').Strategy;
 let FacebookStrategy = require('passport-facebook').Strategy;
 
 let User = require('./models/User');
+let OAuth = require('./models/OAuth');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -39,9 +40,37 @@ passport.use(new FacebookStrategy({
   clientSecret: process.env.FB_SECRET,
   callbackURL: '/auth/facebook/return'
 }, function(accessToken, refreshToken, profile, done) {
-  // TODO : If this is the first time logging in with Facebook, create a new user
-  //        Else, return the UserId associated with the FacebookId
-  done(null, -1);
+    // what if user exists in user table
+    // but first time logging in with fb?
+    // current logic would create a duplicate user in user table
+    OAuth.findOne({where: {
+      oauthId: profile.id,
+      oauthType: 'facebook'
+    }})
+    .then(oauth => {
+      if (!oauth) {
+        User.create({
+          name: profile.displayName,
+          email: 'na',   // ???
+          password: 'na' // ???
+        })
+        .then((user) => {
+          OAuth.create({
+            oauthId: profile.id,
+            oauthType: profile.provider,
+            userId: user.id
+          });
+          done(null, user);
+        });
+      } else {
+        User.findOne({where: {
+          id: oauth.userId
+        }})
+        .then(user => {
+          done(null, user);
+        });
+      }
+    });
 }));
 
 let routes = express.Router();
@@ -75,7 +104,7 @@ routes.get('/auth/facebook', passport.authenticate('facebook'));
 
 routes.get('/auth/facebook/return',
   passport.authenticate('facebook', {
-      successRedirect: '/app',
+      successRedirect: '/',
       failureRedirect: '/login.html'
   })
 );
