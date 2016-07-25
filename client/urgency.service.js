@@ -20,7 +20,8 @@ function prioritizeTasks(allTasks) {
   let now = Date.now();
 
   allTasks.forEach(t => {
-    let timeLeft = t.dueBy - now;
+    let timeLeft = Date.parse(t.dueBy) - now;
+
     if (timeLeft < 0) {
       return tasks.overdue.push(t);
     } else if (timeLeft < t.interval / 2) {

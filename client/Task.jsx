@@ -30,22 +30,21 @@ class Task extends React.Component {
     console.log(socket);
   }
 
-  componentWillMount() {
-    if (this.state.color === 0) {
-      style.border = '2px solid red';
-    } else if (this.state.color === 1) {
-      style.border = '2px solid yellow';
-    } else {
-      style.border = '2px solid green';
-    }
-  }
-
   render() {
+
+    let style2 = Object.assign({}, style);
+    if (this.state.color === 0) {
+      style2.border = '2px solid red';
+    } else if (this.state.color === 1) {
+      style2.border = '2px solid yellow';
+    } else {
+      style2.border = '2px solid green';
+    }
 
     return (
       <div>
         <Paper
-          style={style}
+          style={style2}
           zDepth={3}
           circle={true}
           onTouchTap={this.completeTask.bind(this)}

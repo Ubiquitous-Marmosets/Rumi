@@ -88,12 +88,12 @@ class App extends React.Component {
               {/* Create the overdueTask bubbles */}
               {this.state.overdueTasks.map(overdueTask => {
                 return (
-                  <div className="col-xs-2">
+                  <div className="col-xs-3">
                     <Task
                       id={overdueTask.id}
                       name={overdueTask.name}
                       due={moment().endOf(overdueTask.dueBy).fromNow()}
-                      overdue={0}
+                      color={0}
                       key={overdueTask.id}
                     />
                   </div>
@@ -103,7 +103,7 @@ class App extends React.Component {
               {/* Create the urgentTask bubbles */}
               {this.state.urgentTasks.map(urgentTask => {
                 return (
-                  <div className="col-xs-2" key={urgentTask.id}>
+                  <div className="col-xs-3" key={urgentTask.id}>
                     <Task
                       id={urgentTask.id}
                       name={urgentTask.name}
