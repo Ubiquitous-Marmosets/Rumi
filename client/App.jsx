@@ -26,11 +26,16 @@ class App extends React.Component {
     super();
 
     this.state = {
+      now: Date.now(),
       overdueTasks: [],
       recentTasks: [],
       urgentTasks: [],
       completedTasks: []
     };
+
+    setInterval(() => {
+      this.setState({now: Date.now()});
+    }, 1000*60); // update every minute
   }
 
   componentWillMount() {
@@ -121,7 +126,7 @@ class App extends React.Component {
                     <Task
                       id={recentTask.id}
                       name={recentTask.name}
-                      due={moment().endOf(recentTask.dueBy).fromNow()}
+                      due={moment().endOf(recentTask.dueBy).from(this.now)}
                       overdue={2}
                       />
                   </div>
