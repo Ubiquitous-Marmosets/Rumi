@@ -1,6 +1,6 @@
 let expect = require('chai').expect;
 let urgency = require('../client/urgency.service');
-let fake = require('../client/fakeData');
+let fake = require('./fakeData');
 
 describe('urgency.service', function() {
   it('should accept an empty task list', function() {

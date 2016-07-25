@@ -34,7 +34,6 @@ passport.use(new LocalStrategy({
   });
 }));
 
-// TODO : fix facebook login
 passport.use(new FacebookStrategy({
   clientID: process.env.FB_ID,
   clientSecret: process.env.FB_SECRET,
@@ -92,7 +91,6 @@ routes.post('/auth/local/register', (req, res) => {
         email: req.body.email,
         password: req.body.password
       }).then(user => {
-        // TODO : add auto login?
         res.redirect('/login.html?success');
       });
     }
