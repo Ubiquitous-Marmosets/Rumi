@@ -1,5 +1,5 @@
 var Sequelize = require('sequelize');
-
+var db;
 // require('pg').types.setTypeParser(1114, function(stringValue) {
 //     return new Date(stringValue.substring(0, 10) + 'T' + stringValue.substring(11) + 'Z');
 // });
@@ -10,14 +10,10 @@ require('pg').types.setTypeParser(1114, function(stringValue) {
 });
 
 if (process.env.DATABASE_URL) {
-  var db = new Sequelize(process.env.DATABASE_URL, {
-    host: process.env.DATABASE_HOST,
-    dialect: 'postgres',
-    port: 5432
-  });
+  db = new Sequelize(process.env.DATABASE_URL);
 
 } else {
-  var db = new Sequelize('rumi', 'rumi', '', {
+  db = new Sequelize('rumi', 'rumi', '', {
     host: 'localhost',
     dialect: 'postgres',
   });
