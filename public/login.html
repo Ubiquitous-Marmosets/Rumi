@@ -2,18 +2,68 @@
 <html>
 <head>
   <title>Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+  <link rel="stylesheet" href="loginStyle.css" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
 
-<a href="/auth/facebook">Login with Facebook</a>
+<nav>
+  <div class="nav-wrapper">
+    <span id="rumi" class="brand-logo center"> Rumi </span>
+  </div>
+</nav>
 
-<form method="POST" action="/auth/local">
-  <input type="text" name="email">
-  <input type="text" name="password">
-  <input type="submit">
-</form>
+<div class="center">
+  <div class="container">
+    <div class="row text-center">
 
-<a href="/register.html">Need an account?</a>
+      <br>
 
+      <form method="POST" action="/auth/local">
+        <br>
+          <div class="col-xs-12">
+            <input id="username" type='text' name='email' placeholder="email"/>
+          </div>
+        <br>
+          <div class="col-xs-12">
+            <input id="password" type='password' name='password' placeholder='password' />
+          </div>
+        <br>
+          <div class="col-xs-12">
+            <input value='' type='submit'>
+              <button class='waves-effect waves-light btn'>Submit</button>
+            </input>
+          </div>
+        <input value='' type='submit'/>
+      </form>
+
+      <br>
+        <div id="flash"></div>
+      <br>
+        <a class="fblogin" href="/auth/facebook">
+          <div class="login"></div>
+        </a>
+      <br>
+      <br>
+      <br>
+      <a href="/register.html">Need an account?</a>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+<script>
+var content = '';
+
+  var flash = window.location.search;
+  if (flash === '?success'){
+    content = 'Registration Successful!'
+  }
+
+  flash = flash.substr(1)
+   document.getElementById('flash').innerHTML = content;
+</script>
 </body>
 </html>

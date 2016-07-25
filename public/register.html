@@ -1,18 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login</title>
+  <title>Register</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+  <link rel="stylesheet" href="loginStyle.css" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
 
-<form method="POST" action="/auth/local/register">
-  <input type="text" name="name">
-  <input type="text" name="email">
-  <input type="text" name="password">
-  <input type="submit">
-</form>
+<nav>
+  <div class="nav-wrapper">
+    <span id="rumi" class="brand-logo center"> Rumi </span>
+  </div>
+</nav>
 
-<a href="/login.html">Already have an account?</a>
+<div class="center">
+  <div class="container">
+    <div class="row text-center">
 
+      <br>
+
+      <form method="POST" action="/auth/local/register">
+        <br>
+          <div class="col-xs-12">
+            <input id="name" type='text' name='name' placeholder="Kyle Cho"/>
+          </div>
+        <br>
+          <div class="col-xs-12">
+            <input id="username" type='text' name='email' placeholder="email"/>
+          </div>
+        <br>
+          <div class="col-xs-12">
+            <input id="password" type='password' name='password' placeholder='password' />
+          </div>
+        <br>
+          <div class="col-xs-12">
+            <input value='' type='submit'>
+              <button class='waves-effect waves-light btn'>Submit</button>
+            </input>
+          </div>
+      </form>
+
+      <br>
+        <div id="flash"></div>
+      <br>
+        <a class="fblogin" href="/auth/facebook">
+          <div class="login"></div>
+        </a>
+      <br>
+      <br>
+      <br>
+
+      <a href="/login.html">Already have an account?</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+<script>
+var content = '';
+  var flash = window.location.search;
+  if (flash === '?error'){
+    content = 'Error account already exists for entered email.';
+  }
+
+  flash = flash.substr(1)///make it look pretty
+   document.getElementById('flash').innerHTML=content;
+</script>
 </body>
 </html>
