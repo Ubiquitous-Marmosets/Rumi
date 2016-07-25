@@ -1,6 +1,6 @@
 let expect = require('chai').expect;
 let urgency = require('../client/urgency.service');
-let fake = require ('../client/fakeData.js');
+let fake = require('../client/fakeData');
 
 describe('urgency.service', function() {
   it('should accept an empty task list', function() {
@@ -23,5 +23,15 @@ describe('urgency.service', function() {
     let tasks = urgency.prioritizeTasks(fake.allTasks);
     let overdueTaskNames = tasks.overdue.map(t => t.name);
     expect(overdueTaskNames).to.deep.equal(['wash the car']);
+  });
+  it('should correctly identify overdue tasks', function() {
+    let overdueTask = {
+      name: 'this is critical',
+      dueBy: 0,
+      interval: 10000
+    }
+    let tasks = urgency.prioritizeTasks([overdueTask]);
+    let overdueTaskNames = tasks.overdue.map(t => t.name);
+    expect(overdueTaskNames).to.deep.equal(['this is critical']);
   });
 });
