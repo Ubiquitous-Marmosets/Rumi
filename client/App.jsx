@@ -67,7 +67,7 @@ class App extends React.Component {
 
       this.setState({
         completedTasks: cs
-      });      
+      });
     }.bind(this));
 
 
@@ -153,7 +153,6 @@ class App extends React.Component {
               />
             );
           })}
-
         </div>
       </MuiThemeProvider>
     );

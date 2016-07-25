@@ -1,0 +1,63 @@
+nav {
+  height: 200px;
+}
+
+#rumi {
+  position: relative;
+  top: 35%;
+  font-size: 2em;
+}
+
+.brand-logo {
+  font-size: 80px;
+}
+
+h1 {
+  font-size: 2em;
+  margin: 0 auto;
+}
+
+body {
+  font-size: 3em;
+  margin: 20px;
+}
+
+input[type="text"]
+{
+  font-size: 1.5em;
+}
+
+input[type="password"]
+{
+  font-size: 1.5em;
+}
+
+input {
+  height: 20px;
+  margin: 10px;
+}
+
+.center {
+  margin: 0 auto;
+}
+
+.btn {
+  padding: 80px;
+}
+
+
+#name, #username, #password {
+  height: 100px;
+}
+
+.login {
+  margin: 0 auto;
+  height: 150px;
+  width: 80%;
+  background: url('fb.png') no-repeat;
+  background-size: 100%;
+}
+
+#flash {
+  color: green;
+}

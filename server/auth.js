@@ -12,7 +12,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   User.findById(id).then(user => {
     done(null, user);
-  })
+  });
 });
 
 passport.use(new LocalStrategy({
@@ -85,8 +85,7 @@ routes.post('/auth/local',
 routes.post('/auth/local/register', (req, res) => {
   User.findByEmail(req.body.email).then(user => {
     if (user) {
-      console.error('Account already exists for entered email.');
-      res.end();
+      res.redirect('/register.html?error');
     } else {
       User.create({
         name: req.body.name,
@@ -94,7 +93,7 @@ routes.post('/auth/local/register', (req, res) => {
         password: req.body.password
       }).then(user => {
         // TODO : add auto login?
-        res.redirect('/login.html');
+        res.redirect('/login.html?success');
       });
     }
   });
