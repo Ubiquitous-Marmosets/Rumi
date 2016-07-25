@@ -11,7 +11,7 @@ require('pg').types.setTypeParser(1114, function(stringValue) {
 
 if (process.env.DATABASE_URL) {
   var db = new Sequelize(process.env.DATABASE_URL, {
-    host: process.env.DATABASE_URL,
+    host: process.env.DATABASE_HOST,
     dialect: 'postgres',
     port: 5432
   });
