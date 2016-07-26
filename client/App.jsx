@@ -26,11 +26,29 @@ class App extends React.Component {
     super();
 
     this.state = {
+      now: Date.now(),
       overdueTasks: [],
       recentTasks: [],
       urgentTasks: [],
       completedTasks: []
     };
+
+    setInterval(() => {
+      this.setState({now: Date.now()});
+
+      let allTasks = [].concat(this.state.urgentTasks, this.state.recentTasks, this.state.overdueTasks);
+      this.reprioritize(allTasks);
+    }, 1000*60); // update every minute
+  }
+
+  reprioritize(tasks) {
+    var t = urgency.prioritizeTasks(tasks);
+
+    this.setState({
+      overdueTasks: t.overdue,
+      urgentTasks: t.urgent,
+      recentTasks: t.recent
+    });
   }
 
   componentWillMount() {
@@ -39,17 +57,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    socket.on('sending all tasks', function(tasks) {
-
-      var t = urgency.prioritizeTasks(tasks);
-
-      this.setState({
-        overdueTasks: t.overdue,
-        urgentTasks: t.urgent,
-        recentTasks: t.recent
-      });
-    }.bind(this));
-
+    socket.on('sending all tasks', this.reprioritize.bind(this));
 
     socket.on('sending completeds', completedTasks => {
       this.setState({completedTasks});
@@ -121,7 +129,7 @@ class App extends React.Component {
                     <Task
                       id={recentTask.id}
                       name={recentTask.name}
-                      due={moment().endOf(recentTask.dueBy).fromNow()}
+                      due={moment().endOf(recentTask.dueBy).from(this.state.now)}
                       overdue={2}
                       />
                   </div>
