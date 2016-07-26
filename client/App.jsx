@@ -1,7 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-//import { Router, Route, Link } from 'react-router'
-//import Login from './Login.jsx'
 
 // Necessary for Material-UI
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -138,18 +136,6 @@ class App extends React.Component {
             </div>
           </div>
 
-            {/*
-              Scrapping this button due to unnecessary time spent styling:
-              Proposal: add it to the drop down in the top right or at the top
-              That way it will only have sign out and create a task
-              Better in terms of MVP, as opposed to real use
-
-              <div className="col-xs-2">
-                <div className="showAll" onTouchTap={test}></div>
-              </div>
-
-            */}
-
           {/* Create the completedTasks cards */}
           {this.state.completedTasks.map(completed => {
             return (
@@ -168,17 +154,3 @@ class App extends React.Component {
 }
 
 ReactDOM.render(<App/>, document.getElementById('app'));
-
-// Removed Routes for the sake of building the single App page.
-// TODO: reconnect the app using routers.
-// Curious to see how authentication plays into the current route scheme
-// For instance, we take the user to the main view on load..
-// Whereas I think we should be taking them to login/signup
-// And later, redirect them to App View if their log in was successful.
-
-// ReactDOM.render((
-//   <Router>
-//     <Route path="/" component={App}/>
-//     <Route path="login" component={Login}/>
-//   </Router>),
-// document.getElementById('app'));

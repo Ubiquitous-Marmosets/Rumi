@@ -111,20 +111,3 @@ class AddTask extends React.Component {
 }
 
 export default AddTask;
-/*  code to add to App.jsx
-
-*** component to add to App.jsx ***
-<div>
-  <AddTask onAddNewTask={this.handleAddNewTask.bind(this)}/>
-</div>
-
-*** handler to add to App.jsx ***
-handleAddNewTask(taskName, dueDate) {
-  // this function will handle
-  // posting new task to db &
-  // add to pending tasks
-  // how to implement???
-  console.log('taskName:', taskName);
-  console.log('dueDate:', dueDate);
-}
-*/

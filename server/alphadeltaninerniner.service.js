@@ -88,9 +88,6 @@ function decorate(app, session) {
     return id => {
       return Task.findById(id).then(task => task.complete(userId)).then(completed => {
         completed.reload({ include: [ User, Task ] }).then(completed => {
-          // console.log(completed.user.name);
-          console.log('foobar', completed);
-          console.log('userId', userId);
           io.emit('complete task', completed);
         });
       });

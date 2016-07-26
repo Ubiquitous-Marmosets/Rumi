@@ -27,7 +27,6 @@ class Task extends React.Component {
 
   completeTask () {
     socket.emit('complete task', this.state.id);
-    console.log(socket);
   }
 
   render() {
