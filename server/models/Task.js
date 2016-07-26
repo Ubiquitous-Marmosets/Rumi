@@ -1,6 +1,6 @@
 var db = require('./sequelize');
 var Sequelize = require('sequelize');
-var Completed = require('./completed');
+var Completed = require('./Completed');
 var User = require('./User');
 
 var Task = db.define('task', {
